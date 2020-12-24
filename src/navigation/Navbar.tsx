@@ -55,7 +55,7 @@ const LoggedOutLinks = () => {
 };
 
 function Navbar() {
-  const loggedIn = true;
+  const loggedIn = false;
   return (
     <Menu>
       <Container>

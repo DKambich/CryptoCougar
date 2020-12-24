@@ -28,11 +28,15 @@ type Params<TPath extends RoutePath> = TPath extends RoutePath
   : never;
 
 /** Override RouteProps with generics */
-interface CustomRouteProps<TPath extends RoutePath>
+interface RouteProps<TPath extends RoutePath>
   extends Omit<ReactRouter.RouteProps, "component" | "path"> {
   // tie our component type to our path type
   component: React.ComponentType<Params<TPath>>;
   path: TPath;
+  guarded?: {
+    redirect: boolean;
+    url: keyof RouteParams;
+  };
 }
 
 /**
@@ -41,12 +45,19 @@ interface CustomRouteProps<TPath extends RoutePath>
  */
 function Route<TPath extends RoutePath>({
   component: Component,
+  guarded,
   ...rest
-}: CustomRouteProps<TPath>) {
+}: RouteProps<TPath>) {
   return (
     <ReactRouter.Route
       {...rest}
-      render={({ match: { params } }) => <Component {...params} />}
+      render={({ match: { params } }) =>
+        guarded?.redirect ? (
+          <ReactRouter.Redirect to={guarded.url} />
+        ) : (
+          <Component {...params} />
+        )
+      }
     />
   );
 }
@@ -63,6 +74,8 @@ function DummyPage() {
 }
 
 function Navigation() {
+  const loggedIn = true;
+
   return (
     <ReactRouter.BrowserRouter>
       <ReactRouter.Switch>
@@ -71,8 +84,16 @@ function Navigation() {
         <Route path="/browse" component={DummyPage} />
         <Route path="/trending" component={DummyPage} />
         <Route path="/profile" component={DummyPage} />
-        <Route path="/login" component={DummyPage} />
-        <Route path="/signup" component={DummyPage} />
+        <Route
+          path="/login"
+          component={DummyPage}
+          guarded={{ redirect: loggedIn, url: "/" }}
+        />
+        <Route
+          path="/signup"
+          component={DummyPage}
+          guarded={{ redirect: loggedIn, url: "/" }}
+        />
         <Route path="/" component={DummyPage} />
       </ReactRouter.Switch>
     </ReactRouter.BrowserRouter>
