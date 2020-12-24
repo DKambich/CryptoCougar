@@ -19,6 +19,15 @@ function App() {
           <Route path="/browse">
             <Navbar /> <Container>Browse</Container>
           </Route>
+          <Route path="/profile">
+            <Navbar /> <Container>Profile</Container>
+          </Route>
+          <Route path="/login">
+            <Navbar /> <Container>Login</Container>
+          </Route>
+          <Route path="/signup">
+            <Navbar /> <Container>Sign Up</Container>
+          </Route>
           <Route path="/">
             <Navbar />
             <Container>Home</Container>
