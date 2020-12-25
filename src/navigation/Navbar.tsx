@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Container,
@@ -6,6 +6,7 @@ import {
   Icon,
   Image,
   Menu,
+  Grid,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 
@@ -54,8 +55,32 @@ const LoggedOutLinks = () => {
   );
 };
 
-function Navbar() {
+const MobileMenu = () => {
   const loggedIn = false;
+  const [open, setOpen] = useState(false);
+  // TODO: Add sidebar button and component
+  return (
+    <Menu>
+      <Container>
+        <Menu.Item
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          <Icon name="sidebar" />
+        </Menu.Item>
+        <Menu.Item as={Link} to="/about" header>
+          <Image size="mini" src="/logo.png" style={{ marginRight: ".5em" }} />
+          CryptoCougar
+        </Menu.Item>
+      </Container>
+    </Menu>
+  );
+};
+
+const DesktopMenu = () => {
+  const loggedIn = false;
+
   return (
     <Menu>
       <Container>
@@ -86,6 +111,23 @@ function Navbar() {
         )}
       </Container>
     </Menu>
+  );
+};
+
+function Navbar() {
+  return (
+    <Grid>
+      <Grid.Row only="tablet mobile">
+        <Grid.Column>
+          <MobileMenu />
+        </Grid.Column>
+      </Grid.Row>
+      <Grid.Row only="computer">
+        <Grid.Column>
+          <DesktopMenu />
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 }
 

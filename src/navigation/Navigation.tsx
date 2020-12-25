@@ -74,7 +74,7 @@ function DummyPage() {
 }
 
 function Navigation() {
-  const loggedIn = true;
+  const loggedIn = false;
 
   return (
     <ReactRouter.BrowserRouter>
@@ -83,7 +83,11 @@ function Navigation() {
         <Route path="/home" component={DummyPage} />
         <Route path="/browse" component={DummyPage} />
         <Route path="/trending" component={DummyPage} />
-        <Route path="/profile" component={DummyPage} />
+        <Route
+          path="/profile"
+          component={DummyPage}
+          guarded={{ redirect: !loggedIn, url: "/login" }}
+        />
         <Route
           path="/login"
           component={DummyPage}
