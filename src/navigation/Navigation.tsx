@@ -1,6 +1,7 @@
 import React from "react";
 import * as ReactRouter from "react-router-dom";
 import { Container } from "semantic-ui-react";
+import Trending from "../pages/Trending";
 import Navbar from "./Navbar";
 
 /**
@@ -84,7 +85,7 @@ function Navigation() {
         <Route path="/about" component={DummyPage} />
         <Route path="/home" component={DummyPage} />
         <Route path="/browse" component={DummyPage} />
-        <Route path="/trending" component={DummyPage} />
+        <Route path="/trending" component={Trending} />
         <Route
           path="/favorites"
           component={DummyPage}
