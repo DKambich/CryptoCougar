@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FunctionComponent, ReactNode } from "react";
 import {
   Button,
   Container,
@@ -15,6 +15,25 @@ interface LoggedInLinksProps {
   avatarURL: string;
   logout: Function;
 }
+
+const Responsive = ({
+  mobile,
+  desktop,
+}: {
+  mobile: ReactNode;
+  desktop: ReactNode;
+}) => {
+  return (
+    <Grid>
+      <Grid.Row only="tablet mobile">
+        <Grid.Column>{mobile}</Grid.Column>
+      </Grid.Row>
+      <Grid.Row only="computer">
+        <Grid.Column>{desktop}</Grid.Column>
+      </Grid.Row>
+    </Grid>
+  );
+};
 
 const LoggedInLinks = ({ username, avatarURL, logout }: LoggedInLinksProps) => {
   const trigger = (
@@ -45,32 +64,76 @@ const LoggedInLinks = ({ username, avatarURL, logout }: LoggedInLinksProps) => {
 const LoggedOutLinks = () => {
   return (
     <Menu.Item position="right">
-      <Button style={{ marginRight: ".5em" }} as={Link} to="/login">
-        Log in
+      <Button
+        animated="fade"
+        style={{ marginRight: ".5em" }}
+        as={Link}
+        to="/login"
+      >
+        <Button.Content visible>Login</Button.Content>
+        <Button.Content hidden>
+          <Icon name="sign-in" />
+        </Button.Content>
       </Button>
-      <Button as={Link} to="/signup">
-        Sign Up
+      <Button animated="fade" as={Link} to="/signup">
+        <Button.Content visible>Sign Up</Button.Content>
+        <Button.Content hidden>
+          <Icon name="add user" />
+        </Button.Content>
       </Button>
     </Menu.Item>
   );
 };
 
-const MobileMenu = () => {
-  const loggedIn = false;
-  const [open, setOpen] = useState(false);
-  // TODO: Add sidebar button and component
+const AuthMobileLinks = ({ loggedIn }: { loggedIn: boolean }) => {
+  return loggedIn ? (
+    <>
+      <Dropdown.Item as={Link} to="/profile">
+        <Icon name="user circle" />
+        Profile
+      </Dropdown.Item>
+      <Dropdown.Item>
+        <Icon name="sign-out" />
+        Log Out
+      </Dropdown.Item>
+    </>
+  ) : (
+    <>
+      <Dropdown.Item as={Link} to="/login">
+        <Icon name="sign-in" />
+        Login
+      </Dropdown.Item>
+      <Dropdown.Item as={Link} to="/signup">
+        <Icon name="add user" />
+        Sign Up
+      </Dropdown.Item>
+    </>
+  );
+};
+
+const MobileMenu = ({ loggedIn }: { loggedIn: boolean }) => {
   return (
     <Menu>
       <Container>
-        <Menu.Item
-          onClick={() => {
-            setOpen(!open);
-          }}
-        >
-          <Icon name="sidebar" />
-        </Menu.Item>
-        <Menu.Item as={Link} to="/about" header>
-          <Image size="mini" src="/logo.png" style={{ marginRight: ".5em" }} />
+        <Dropdown item icon="sidebar">
+          <Dropdown.Menu style={{ width: "100vw" }}>
+            <Dropdown.Item as={Link} to="/home">
+              <Icon name="home" />
+              Home
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/browse">
+              <Icon name="search" />
+              Browse
+            </Dropdown.Item>
+            <Dropdown.Item as={Link} to="/trending">
+              <Icon name="chart line" />
+              Trending
+            </Dropdown.Item>
+            <AuthMobileLinks loggedIn={loggedIn} />
+          </Dropdown.Menu>
+        </Dropdown>
+        <Menu.Item as={Link} to="/about" header style={{ flexGrow: 1 }}>
+          <Image avatar src="/logo.png" style={{ marginRight: ".5em" }} />
           CryptoCougar
         </Menu.Item>
       </Container>
@@ -78,9 +141,7 @@ const MobileMenu = () => {
   );
 };
 
-const DesktopMenu = () => {
-  const loggedIn = false;
-
+const DesktopMenu = ({ loggedIn }: { loggedIn: boolean }) => {
   return (
     <Menu>
       <Container>
@@ -115,19 +176,13 @@ const DesktopMenu = () => {
 };
 
 function Navbar() {
+  const loggedIn = false;
+
   return (
-    <Grid>
-      <Grid.Row only="tablet mobile">
-        <Grid.Column>
-          <MobileMenu />
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row only="computer">
-        <Grid.Column>
-          <DesktopMenu />
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+    <Responsive
+      mobile={<MobileMenu loggedIn={loggedIn} />}
+      desktop={<DesktopMenu loggedIn={loggedIn} />}
+    />
   );
 }
 
