@@ -7,24 +7,26 @@ import Navbar from "./Navbar";
  *  Map route to component props type
  *  https://www.emeraldwalk.com/blog/2020-07-21/strong-typed-react-router/
  */
-interface RouteParams {
+export interface Routes {
   "/": {};
   "/about": {};
   "/home": {};
   "/browse": {};
   "/trending": {};
+  "/favorites": {};
   "/profile": {};
   "/login": {};
   "/signup": {};
+  "/logout": {};
   "/schedule/:id": { id: string };
 }
 
 /** This is just a union type of my route matching strings */
-type RoutePath = keyof RouteParams;
+type RoutePath = keyof Routes;
 
 /** Helper type to derive route props from path */
 type Params<TPath extends RoutePath> = TPath extends RoutePath
-  ? RouteParams[TPath]
+  ? Routes[TPath]
   : never;
 
 /** Override RouteProps with generics */
@@ -35,7 +37,7 @@ interface RouteProps<TPath extends RoutePath>
   path: TPath;
   guarded?: {
     redirect: boolean;
-    url: keyof RouteParams;
+    url: keyof Routes;
   };
 }
 
@@ -74,7 +76,7 @@ function DummyPage() {
 }
 
 function Navigation() {
-  const loggedIn = false;
+  const loggedIn = true;
 
   return (
     <ReactRouter.BrowserRouter>
@@ -84,7 +86,17 @@ function Navigation() {
         <Route path="/browse" component={DummyPage} />
         <Route path="/trending" component={DummyPage} />
         <Route
+          path="/favorites"
+          component={DummyPage}
+          guarded={{ redirect: !loggedIn, url: "/login" }}
+        />
+        <Route
           path="/profile"
+          component={DummyPage}
+          guarded={{ redirect: !loggedIn, url: "/login" }}
+        />
+        <Route
+          path="/logout"
           component={DummyPage}
           guarded={{ redirect: !loggedIn, url: "/login" }}
         />

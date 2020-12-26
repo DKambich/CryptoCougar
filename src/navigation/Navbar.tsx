@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {
   Button,
   Container,
@@ -9,12 +9,30 @@ import {
   Grid,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+import { SemanticICONS } from "semantic-ui-react/dist/commonjs/generic";
+import { Routes } from "./Navigation";
 
-interface LoggedInLinksProps {
-  username: string;
-  avatarURL: string;
-  logout: Function;
+interface NavLink {
+  title: string;
+  icon: SemanticICONS;
+  link: keyof Routes;
 }
+const mainLinks: NavLink[] = [
+  { title: "Home", icon: "home", link: "/home" },
+  { title: "Browse", icon: "search", link: "/browse" },
+  { title: "Trending", icon: "chart line", link: "/trending" },
+];
+
+const loggedInLinks: NavLink[] = [
+  { title: "Favorites", icon: "star", link: "/favorites" },
+  { title: "Profile", icon: "user circle", link: "/profile" },
+  { title: "Logout", icon: "sign-out", link: "/logout" },
+];
+
+const loggedOutLinks: NavLink[] = [
+  { title: "Login", icon: "sign-in", link: "/login" },
+  { title: "Sign Up", icon: "add user", link: "/signup" },
+];
 
 const Responsive = ({
   mobile,
@@ -35,78 +53,64 @@ const Responsive = ({
   );
 };
 
-const LoggedInLinks = ({ username, avatarURL, logout }: LoggedInLinksProps) => {
-  const trigger = (
-    <span>
-      <Image src={avatarURL} avatar style={{ marginRight: ".5em" }} />
-      {username}
-    </span>
-  );
+const AuthDesktopLinks = ({ loggedIn }: { loggedIn: boolean }) => {
+  if (loggedIn) {
+    const trigger = (
+      <span>
+        <Image
+          src="https://picsum.photos/200"
+          avatar
+          style={{ marginRight: ".5em" }}
+        />
+        John Smith
+      </span>
+    );
 
-  return (
-    <Menu.Menu position="right">
-      <Dropdown item trigger={trigger}>
-        <Dropdown.Menu>
-          <Dropdown.Item as={Link} to="/profile">
-            <Icon name="user circle" />
-            <span>Profile</span>
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => logout()}>
-            <Icon name="sign-out" />
-            <span>Log Out</span>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    </Menu.Menu>
-  );
-};
-
-const LoggedOutLinks = () => {
+    return (
+      <Menu.Menu position="right">
+        <Dropdown item trigger={trigger}>
+          <Dropdown.Menu>
+            {loggedInLinks.map(({ title, icon, link }) => (
+              <Dropdown.Item as={Link} to={link} key={title}>
+                <Icon name={icon} />
+                {title}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </Menu.Menu>
+    );
+  }
   return (
     <Menu.Item position="right">
-      <Button
-        animated="fade"
-        style={{ marginRight: ".5em" }}
-        as={Link}
-        to="/login"
-      >
-        <Button.Content visible>Login</Button.Content>
-        <Button.Content hidden>
-          <Icon name="sign-in" />
-        </Button.Content>
-      </Button>
-      <Button animated="fade" as={Link} to="/signup">
-        <Button.Content visible>Sign Up</Button.Content>
-        <Button.Content hidden>
-          <Icon name="add user" />
-        </Button.Content>
-      </Button>
+      {loggedOutLinks.map(({ title, icon, link }) => (
+        <Button
+          animated="fade"
+          style={{ marginLeft: ".25em", marginRight: ".25em" }}
+          as={Link}
+          to={link}
+          key={title}
+        >
+          <Button.Content visible>{title}</Button.Content>
+          <Button.Content hidden>
+            <Icon name={icon} />
+          </Button.Content>
+        </Button>
+      ))}
     </Menu.Item>
   );
 };
 
 const AuthMobileLinks = ({ loggedIn }: { loggedIn: boolean }) => {
-  return loggedIn ? (
+  const links = loggedIn ? loggedInLinks : loggedOutLinks;
+  return (
     <>
-      <Dropdown.Item as={Link} to="/profile">
-        <Icon name="user circle" />
-        Profile
-      </Dropdown.Item>
-      <Dropdown.Item>
-        <Icon name="sign-out" />
-        Log Out
-      </Dropdown.Item>
-    </>
-  ) : (
-    <>
-      <Dropdown.Item as={Link} to="/login">
-        <Icon name="sign-in" />
-        Login
-      </Dropdown.Item>
-      <Dropdown.Item as={Link} to="/signup">
-        <Icon name="add user" />
-        Sign Up
-      </Dropdown.Item>
+      {links.map(({ title, icon, link }) => (
+        <Dropdown.Item as={Link} to={link} key={title}>
+          <Icon name={icon} />
+          {title}
+        </Dropdown.Item>
+      ))}
     </>
   );
 };
@@ -117,18 +121,12 @@ const MobileMenu = ({ loggedIn }: { loggedIn: boolean }) => {
       <Container>
         <Dropdown item icon="sidebar">
           <Dropdown.Menu style={{ width: "100vw" }}>
-            <Dropdown.Item as={Link} to="/home">
-              <Icon name="home" />
-              Home
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/browse">
-              <Icon name="search" />
-              Browse
-            </Dropdown.Item>
-            <Dropdown.Item as={Link} to="/trending">
-              <Icon name="chart line" />
-              Trending
-            </Dropdown.Item>
+            {mainLinks.map(({ title, icon, link }) => (
+              <Dropdown.Item as={Link} to={link} key={title}>
+                <Icon name={icon} />
+                {title}
+              </Dropdown.Item>
+            ))}
             <AuthMobileLinks loggedIn={loggedIn} />
           </Dropdown.Menu>
         </Dropdown>
@@ -149,34 +147,20 @@ const DesktopMenu = ({ loggedIn }: { loggedIn: boolean }) => {
           <Image size="mini" src="/logo.png" style={{ marginRight: ".5em" }} />
           CryptoCougar
         </Menu.Item>
-        <Menu.Item as={Link} to="/home">
-          <Icon name="home" />
-          Home
-        </Menu.Item>
-        <Menu.Item as={Link} to="/browse">
-          <Icon name="search" />
-          Browse
-        </Menu.Item>
-        <Menu.Item as={Link} to="/trending">
-          <Icon name="chart line" />
-          Trending
-        </Menu.Item>
-        {loggedIn ? (
-          <LoggedInLinks
-            username="John Smith"
-            avatarURL="https://picsum.photos/200"
-            logout={() => console.log("Logout")}
-          />
-        ) : (
-          <LoggedOutLinks />
-        )}
+        {mainLinks.map(({ title, icon, link }) => (
+          <Menu.Item as={Link} to={link} key={title}>
+            <Icon name={icon} />
+            {title}
+          </Menu.Item>
+        ))}
+        <AuthDesktopLinks loggedIn={loggedIn} />
       </Container>
     </Menu>
   );
 };
 
 function Navbar() {
-  const loggedIn = false;
+  const loggedIn = true;
 
   return (
     <Responsive
