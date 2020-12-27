@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.js": "/CryptoCougar/static/js/main.6900aa9a.chunk.js",
+    "main.js.map": "/CryptoCougar/static/js/main.6900aa9a.chunk.js.map",
+    "runtime-main.js": "/CryptoCougar/static/js/runtime-main.0759b3cc.js",
+    "runtime-main.js.map": "/CryptoCougar/static/js/runtime-main.0759b3cc.js.map",
+    "static/css/2.9322294e.chunk.css": "/CryptoCougar/static/css/2.9322294e.chunk.css",
+    "static/js/2.c7acf437.chunk.js": "/CryptoCougar/static/js/2.c7acf437.chunk.js",
+    "static/js/2.c7acf437.chunk.js.map": "/CryptoCougar/static/js/2.c7acf437.chunk.js.map",
+    "index.html": "/CryptoCougar/index.html",
+    "static/css/2.9322294e.chunk.css.map": "/CryptoCougar/static/css/2.9322294e.chunk.css.map",
+    "static/js/2.c7acf437.chunk.js.LICENSE.txt": "/CryptoCougar/static/js/2.c7acf437.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/CryptoCougar/static/media/outline-icons.ddae9b1b.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0759b3cc.js",
+    "static/css/2.9322294e.chunk.css",
+    "static/js/2.c7acf437.chunk.js",
+    "static/js/main.6900aa9a.chunk.js"
+  ]
+}
