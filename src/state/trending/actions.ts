@@ -33,8 +33,6 @@ export function finishFetch(data: TrendingData[]): TrendingActionTypes {
   };
 }
 
-const fac = new FastAverageColor();
-
 async function getHistoricalData(id: string): Promise<HistoricData> {
   // Request the historical coin data for the past 7 days
   let resp = await fetch(
@@ -59,6 +57,7 @@ async function getTrendingData(): Promise<TrendingData[]> {
   const results = await Promise.allSettled(promises);
 
   // Map the retrieved coin data to TrendingData objects
+  const fac = new FastAverageColor();
   const trendingData: TrendingData[] = [];
   for (let i = 0; i < results.length; i++) {
     const result = results[i];
