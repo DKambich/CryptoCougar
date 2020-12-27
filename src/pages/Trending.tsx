@@ -4,124 +4,64 @@ import {
   Container,
   Grid,
   Header,
-  Image,
+  Image as SemanticImage,
   Loader,
 } from "semantic-ui-react";
-import { ResponsiveLine, Serie } from "@nivo/line";
+import { Datum, ResponsiveLine, Serie } from "@nivo/line";
+import moment from "moment";
 import Navbar from "../navigation/Navbar";
+import FastAverageColor from "fast-average-color";
 
-const data = [
-  {
-    id: "japan",
-    data: [
-      {
-        x: "plane",
-        y: 0,
-      },
-      {
-        x: "helicopter",
-        y: 51,
-      },
-      {
-        x: "boat",
-        y: 46,
-      },
-      {
-        x: "train",
-        y: 15,
-      },
-      {
-        x: "subway",
-        y: 208,
-      },
-      {
-        x: "bus",
-        y: 72,
-      },
-      {
-        x: "car",
-        y: 138,
-      },
-    ],
-  },
-];
+const fac = new FastAverageColor();
 
-const Graph = ({ data }: { data: number[][] }) => {
-  let graphData: Serie[] = [
-    {
-      id: "test",
-      data: data.map((price) => {
-        return { x: price[0], y: price[1] };
-      }),
-    },
-  ];
+const Graph = ({
+  id,
+  data,
+  lineColor,
+}: {
+  id: string;
+  data: Datum[];
+  lineColor: string;
+}) => {
+  let series: Serie = {
+    id,
+    data,
+  };
 
   return (
-    <div style={{ height: 200, width: "auto" }}>
+    <div style={{ height: 300, width: "auto" }}>
       <ResponsiveLine
-        data={graphData}
-        margin={{ top: 50, right: 80, bottom: 50, left: 60 }}
+        // tooltip={({ point }) => {
+        //   console.log(point);
+        //   return <Card>Date: {point.data.xFormatted}</Card>;
+        // }}
+        data={[series]}
+        colors={lineColor}
+        curve="natural"
+        margin={{ top: 50, right: 80, bottom: 50, left: 80 }}
         xScale={{ type: "point" }}
         yScale={{
           type: "linear",
-          min: 0,
-          max: "auto",
-          stacked: true,
-          reverse: false,
         }}
-        yFormat=" >-.2f"
-        axisTop={null}
-        axisRight={null}
+        yFormat=" >-$.2r"
         axisBottom={{
-          orient: "bottom",
-          tickSize: 5,
+          tickSize: 10,
           tickPadding: 5,
-          tickRotation: 0,
-          legend: "transportation",
-          legendOffset: 36,
+          legend: "Date",
+          legendOffset: 40,
           legendPosition: "middle",
+          format: (value) => moment(value).format("MM/DD/YY"),
         }}
         axisLeft={{
-          orient: "left",
-          tickSize: 5,
+          tickSize: 10,
           tickPadding: 5,
-          tickRotation: 0,
-          legend: "count",
-          legendOffset: -40,
+          legend: "Price",
+          legendOffset: -55,
           legendPosition: "middle",
         }}
-        pointSize={10}
-        pointColor={{ theme: "background" }}
-        pointBorderWidth={2}
+        pointSize={8}
         pointBorderColor={{ from: "serieColor" }}
-        pointLabelYOffset={-12}
         useMesh={true}
-        legends={[
-          {
-            anchor: "bottom-right",
-            direction: "column",
-            justify: false,
-            translateX: 100,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: "left-to-right",
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: "circle",
-            symbolBorderColor: "rgba(0, 0, 0, .5)",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemBackground: "rgba(0, 0, 0, .03)",
-                  itemOpacity: 1,
-                },
-              },
-            ],
-          },
-        ]}
       />
     </div>
   );
@@ -145,7 +85,15 @@ interface TrendingCoin {
 
 interface TrendingData extends TrendingCoin {
   historicData: HistoricData;
+  color: string;
 }
+
+const convertToDatum = (data: number[][]): Datum[] => {
+  return data.map((item) => {
+    console.log(moment(item[0]).format("MM/DD/YY"));
+    return { x: moment(item[0]).format("MM/DD/YY"), y: item[1] };
+  });
+};
 
 async function getHistoricalData(id: string): Promise<HistoricData> {
   let resp = await fetch(
@@ -169,14 +117,58 @@ async function getTrendingData(): Promise<TrendingData[]> {
 
   // Map the retrieved coin data to TrendingData objects
   const trendingData: TrendingData[] = [];
-  results.forEach((result, index) => {
+  for (let i = 0; i < results.length; i++) {
+    const result = results[i];
     if (result.status === "fulfilled") {
-      trendingData.push({ ...coins[index], historicData: result.value });
+      // Fetch the average color of the coins icon
+      const url = `https://cors-anywhere.herokuapp.com/${coins[i].thumb}`;
+      const color = (await fac.getColorAsync(url)).rgb;
+
+      // Create TrendingData from each coin, historic data, and color
+      trendingData.push({
+        ...coins[i],
+        historicData: result.value,
+        color,
+      });
     }
-  });
+  }
   return trendingData;
 }
 
+const renderCard = ({
+  id,
+  symbol,
+  market_cap_rank,
+  name,
+  large,
+  color,
+  historicData: { prices },
+}: TrendingData) => (
+  <Grid.Column
+    key={id}
+    mobile={16}
+    tablet={16}
+    computer={8}
+    style={{ display: "flex", justifyContent: "center" }}
+  >
+    <Card style={{ width: "100%" }}>
+      <Graph id={name} data={convertToDatum(prices)} lineColor={color} />
+      <Card.Content>
+        <Card.Header>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <SemanticImage src={large} size="mini" />
+            <Header as="h5" style={{ margin: 0, marginLeft: "1em" }}>
+              {name} ({symbol})
+              <Header.Subheader>
+                Current market cap rank {market_cap_rank}
+              </Header.Subheader>
+            </Header>
+          </div>
+        </Card.Header>
+      </Card.Content>
+    </Card>
+  </Grid.Column>
+);
 function Trending() {
   const [loading, setLoading] = useState(true);
   const [trending, setTrending] = useState<TrendingData[]>([]);
@@ -198,41 +190,7 @@ function Trending() {
           </div>
         )}
         <Grid container centered columns={2} style={{ margin: "1.5em" }}>
-          {trending.map(
-            ({
-              id,
-              symbol,
-              market_cap_rank,
-              name,
-              large,
-              historicData: { prices },
-            }) => (
-              <Grid.Column
-                key={id}
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-                <Card style={{ width: "100%" }}>
-                  <Graph data={prices} />
-                  <Card.Content>
-                    <Card.Header>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <Image src={large} size="mini" />
-                        <Header
-                          as="h5"
-                          style={{ margin: 0, marginLeft: "1em" }}
-                        >
-                          {name} ({symbol})
-                          <Header.Subheader>
-                            Current market cap rank {market_cap_rank}
-                          </Header.Subheader>
-                        </Header>
-                      </div>
-                    </Card.Header>
-                  </Card.Content>
-                </Card>
-              </Grid.Column>
-            )
-          )}
+          {trending.map(renderCard)}
         </Grid>
         <div style={{ height: 200 }}></div>
       </Container>
