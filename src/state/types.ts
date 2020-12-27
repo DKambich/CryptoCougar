@@ -18,3 +18,7 @@ export interface TrendingData extends TrendingCoin {
   historicData: HistoricData;
   color: string;
 }
+
+export interface StyleSheet {
+  [key: string]: React.CSSProperties;
+}

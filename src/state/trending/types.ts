@@ -1,20 +1,26 @@
 import { TrendingData } from "../types";
 
 // src/store/chat/types.ts
-export const START_FETCH = "START_FETCH";
-export const FAIL_FETCH = "FAIL_FETCH";
-export const FINISH_FETCH = "FINISH_FETCH";
+export const START_FETCH = "TRENDING_COINS_START_FETCH";
+export const FAIL_FETCH = "TRENDING_COINS_FAIL_FETCH";
+export const FINISH_FETCH = "TRENDING_COINS_FINISH_FETCH";
 
-export interface StartFetchAction {
+export interface TrendingState {
+  data: TrendingData[];
+  isLoading: boolean;
+  error: string;
+}
+
+interface StartFetchAction {
   type: typeof START_FETCH;
 }
 
-export interface FailFetchAction {
+interface FailFetchAction {
   type: typeof FAIL_FETCH;
   payload: string;
 }
 
-export interface FinishFetchAction {
+interface FinishFetchAction {
   type: typeof FINISH_FETCH;
   payload: TrendingData[];
 }
@@ -23,9 +29,3 @@ export type TrendingActionTypes =
   | StartFetchAction
   | FailFetchAction
   | FinishFetchAction;
-
-export interface TrendingState {
-  data: TrendingData[];
-  isLoading: boolean;
-  error: string;
-}

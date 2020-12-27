@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
+  Button,
   Card,
   Container,
   Grid,
@@ -10,23 +11,16 @@ import {
 } from "semantic-ui-react";
 import { Datum, ResponsiveLine, Serie } from "@nivo/line";
 import moment from "moment";
+import { connect, ConnectedProps } from "react-redux";
+
 import Navbar from "../navigation/Navbar";
 
 import { RootState } from "../state/store";
 import { fetchTrendingCoins } from "../state/trending/actions";
+import { StyleSheet, TrendingData } from "../state/types";
 
-import { connect, ConnectedProps } from "react-redux";
-
-const mapState = (state: RootState) => ({
-  trending: state.trending.data,
-  loading: state.trending.isLoading,
-});
-
-const mapActionsToProps = {
-  fetchTrendingCoins,
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
+// Define page styles
+const styles: StyleSheet = {
   root: { padding: "1.5em" },
   graph: { height: 300, width: "auto" },
   card: { width: "100%" },
@@ -34,15 +28,37 @@ const styles: { [key: string]: React.CSSProperties } = {
   cardContainer: { display: "flex", alignItems: "center" },
 };
 
-const Graph = ({
-  id,
-  data,
-  lineColor,
-}: {
+// Define Redux state mappings
+
+const mapStateToProps = ({ trending }: RootState) => ({
+  trending: trending.data,
+  error: trending.error,
+  loading: trending.isLoading,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  getTrending: () => dispatch(fetchTrendingCoins()),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+// Define Helper functions
+
+const convertToDateDatum = (data: number[][]): Datum[] => {
+  // Map each element to a Datum date point
+  return data.map((item) => {
+    return { x: moment(item[0]).format("h:mm A MM/DD/YYYY"), y: item[1] };
+  });
+};
+
+// Define subcomponents
+
+interface TrendingGraphProps {
   id: string;
   data: Datum[];
   lineColor: string;
-}) => {
+}
+const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
   let series: Serie = {
     id,
     data,
@@ -83,134 +99,83 @@ const Graph = ({
   );
 };
 
-interface HistoricData {
-  prices: number[][];
-  market_caps: number[][];
-  total_volumes: number[][];
+interface TrendingCardProps {
+  coin: TrendingData;
 }
+const TrendingCard = ({ coin }: TrendingCardProps) => {
+  const {
+    id,
+    symbol,
+    market_cap_rank,
+    name,
+    large,
+    color,
+    historicData: { prices },
+  } = coin;
 
-interface TrendingCoin {
-  id: string;
-  name: string;
-  symbol: string;
-  market_cap_rank: number;
-  thumb: string;
-  large: string;
-  score: number;
-}
-
-interface TrendingData extends TrendingCoin {
-  historicData: HistoricData;
-  color: string;
-}
-
-const convertToDateDatum = (data: number[][]): Datum[] => {
-  return data.map((item) => {
-    return { x: moment(item[0]).format("h:mm A MM/DD/YYYY"), y: item[1] };
-  });
+  return (
+    <Grid.Column key={id} mobile={16} tablet={16} computer={8}>
+      <Card style={styles.card}>
+        <TrendingGraph
+          id={name}
+          data={convertToDateDatum(prices)}
+          lineColor={color}
+        />
+        <Card.Content>
+          <Card.Header>
+            <div style={styles.cardContainer}>
+              <SemanticImage src={large} size="mini" />
+              <Header as="h5" style={styles.cardHeader}>
+                {name} ({symbol})
+                <Header.Subheader>
+                  Current market cap rank {market_cap_rank}
+                </Header.Subheader>
+              </Header>
+            </div>
+          </Card.Header>
+        </Card.Content>
+      </Card>
+    </Grid.Column>
+  );
 };
 
-// async function getHistoricalData(id: string): Promise<HistoricData> {
-//   // Request the historical coin data for the past 7 days
-//   let resp = await fetch(
-//     `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=6&interval=daily`
-//   );
-//   let respJSON = await resp.json();
+// Define page component
 
-//   // Return the parsed historical coin data
-//   return respJSON;
-// }
+type TrendingProps = ConnectedProps<typeof connector>;
 
-// async function getTrendingData(): Promise<TrendingData[]> {
-//   // Request the trending coin data
-//   let resp = await fetch("https://api.coingecko.com/api/v3/search/trending");
-//   let respJSON = await resp.json();
+function Trending(props: TrendingProps) {
+  const { loading, trending, error, getTrending } = props;
 
-//   // Map the retrieved coin data to TrendingCoin objects
-//   const coins: TrendingCoin[] = respJSON.coins.map((coin: any) => coin.item);
-
-//   // Request the historic coin data
-//   const promises = coins.map(({ id }) => getHistoricalData(id));
-//   const results = await Promise.allSettled(promises);
-
-//   // Map the retrieved coin data to TrendingData objects
-//   const trendingData: TrendingData[] = [];
-//   for (let i = 0; i < results.length; i++) {
-//     const result = results[i];
-//     if (result.status === "fulfilled") {
-//       // Fetch the average color of the coins icon
-//       const url = `https://cors-anywhere.herokuapp.com/${coins[i].thumb}`;
-//       const color = (await fac.getColorAsync(url)).rgb;
-
-//       // Create TrendingData from each coin, historic data, and color
-//       trendingData.push({
-//         ...coins[i],
-//         historicData: result.value,
-//         color,
-//       });
-//     }
-//   }
-//   return trendingData;
-// }
-
-const renderCard = ({
-  id,
-  symbol,
-  market_cap_rank,
-  name,
-  large,
-  color,
-  historicData: { prices },
-}: TrendingData) => (
-  <Grid.Column key={id} mobile={16} tablet={16} computer={8}>
-    <Card style={styles.card}>
-      <Graph id={name} data={convertToDateDatum(prices)} lineColor={color} />
-      <Card.Content>
-        <Card.Header>
-          <div style={styles.cardContainer}>
-            <SemanticImage src={large} size="mini" />
-            <Header as="h5" style={styles.cardHeader}>
-              {name} ({symbol})
-              <Header.Subheader>
-                Current market cap rank {market_cap_rank}
-              </Header.Subheader>
-            </Header>
-          </div>
-        </Card.Header>
-      </Card.Content>
-    </Card>
-  </Grid.Column>
-);
-
-const connector = connect(mapState, mapActionsToProps);
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-type Props = PropsFromRedux;
-
-function Trending(props: Props) {
-  const { loading, trending, fetchTrendingCoins } = props;
-
-  console.log(props);
+  // Load the trending data
   useEffect(() => {
-    // getTrendingData().then((coins) => {
-    //   setLoading(false);
-    //   setTrending(coins);
-    // });
-    fetchTrendingCoins();
-  }, []);
+    getTrending();
+  }, [getTrending]);
 
   return (
     <>
       <Navbar />
       <Container style={styles.root}>
         {loading && <Loader active={loading} inline="centered" />}
+        {error && (
+          <Message negative>
+            <Message.Header>Error loading trending coin data</Message.Header>
+            <p>
+              The following error occured when trying to load the trending coin
+              data: '{error}'
+            </p>
+            <Button negative onClick={getTrending}>
+              Retry
+            </Button>
+          </Message>
+        )}
         <Grid container centered columns={2}>
-          {trending.map(renderCard)}
+          {trending.map((coin) => (
+            <TrendingCard coin={coin} />
+          ))}
         </Grid>
       </Container>
     </>
   );
 }
 
-export default connect(mapState, mapActionsToProps)(Trending);
+export default connector(Trending);

@@ -83,13 +83,14 @@ export const fetchTrendingCoins = (): ThunkAction<
   RootState,
   unknown,
   Action<string>
-> => async (dispatch) => {
-  console.log("HERE");
-  dispatch(startFetch());
-  try {
-    const data = await getTrendingData();
-    dispatch(finishFetch(data));
-  } catch (error) {
-    dispatch(failFetch(error));
-  }
+> => {
+  return async (dispatch) => {
+    dispatch(startFetch());
+    try {
+      const data = await getTrendingData();
+      dispatch(finishFetch(data));
+    } catch (error) {
+      dispatch(failFetch(error));
+    }
+  };
 };

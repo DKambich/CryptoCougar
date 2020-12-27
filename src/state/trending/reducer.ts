@@ -18,7 +18,7 @@ export function trendingReducer(
 ): TrendingState {
   switch (action.type) {
     case START_FETCH:
-      return { ...state, isLoading: true, error: "" };
+      return { ...state, isLoading: true, data: [], error: "" };
     case FAIL_FETCH:
       return {
         ...state,
