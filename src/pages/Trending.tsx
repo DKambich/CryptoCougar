@@ -15,6 +15,14 @@ import FastAverageColor from "fast-average-color";
 
 const fac = new FastAverageColor();
 
+const styles: { [key: string]: React.CSSProperties } = {
+  root: { padding: "1.5em" },
+  graph: { height: 300, width: "auto" },
+  card: { width: "100%" },
+  cardHeader: { margin: 0, marginLeft: "1em" },
+  cardContainer: { display: "flex", alignItems: "center" },
+};
+
 const Graph = ({
   id,
   data,
@@ -30,7 +38,7 @@ const Graph = ({
   };
 
   return (
-    <div style={{ height: 300, width: "auto" }}>
+    <div style={styles.graph}>
       <ResponsiveLine
         data={[series]}
         colors={lineColor}
@@ -85,17 +93,20 @@ interface TrendingData extends TrendingCoin {
   color: string;
 }
 
-const convertToDatum = (data: number[][]): Datum[] => {
+const convertToDateDatum = (data: number[][]): Datum[] => {
   return data.map((item) => {
     return { x: moment(item[0]).format("h:mm A MM/DD/YYYY"), y: item[1] };
   });
 };
 
 async function getHistoricalData(id: string): Promise<HistoricData> {
+  // Request the historical coin data for the past 7 days
   let resp = await fetch(
     `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=6&interval=daily`
   );
   let respJSON = await resp.json();
+
+  // Return the parsed historical coin data
   return respJSON;
 }
 
@@ -141,13 +152,13 @@ const renderCard = ({
   historicData: { prices },
 }: TrendingData) => (
   <Grid.Column key={id} mobile={16} tablet={16} computer={8}>
-    <Card style={{ width: "100%" }}>
-      <Graph id={name} data={convertToDatum(prices)} lineColor={color} />
+    <Card style={styles.card}>
+      <Graph id={name} data={convertToDateDatum(prices)} lineColor={color} />
       <Card.Content>
         <Card.Header>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={styles.cardContainer}>
             <SemanticImage src={large} size="mini" />
-            <Header as="h5" style={{ margin: 0, marginLeft: "1em" }}>
+            <Header as="h5" style={styles.cardHeader}>
               {name} ({symbol})
               <Header.Subheader>
                 Current market cap rank {market_cap_rank}
@@ -173,13 +184,9 @@ function Trending() {
   return (
     <>
       <Navbar />
-      <Container>
-        {loading && (
-          <div style={{ margin: "2.5em" }}>
-            <Loader active={loading} inline="centered" />
-          </div>
-        )}
-        <Grid container centered columns={2} style={{ margin: "1.5em" }}>
+      <Container style={styles.root}>
+        {loading && <Loader active={loading} inline="centered" />}
+        <Grid container centered columns={2}>
           {trending.map(renderCard)}
         </Grid>
       </Container>
