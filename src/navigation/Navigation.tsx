@@ -80,7 +80,7 @@ function Navigation() {
   const loggedIn = true;
 
   return (
-    <ReactRouter.BrowserRouter>
+    <ReactRouter.HashRouter basename="/">
       <ReactRouter.Switch>
         <Route path="/about" component={DummyPage} />
         <Route path="/home" component={DummyPage} />
@@ -113,7 +113,7 @@ function Navigation() {
         />
         <Route path="/" component={DummyPage} />
       </ReactRouter.Switch>
-    </ReactRouter.BrowserRouter>
+    </ReactRouter.HashRouter>
   );
 }
 
