@@ -131,7 +131,7 @@ const MobileMenu = ({ loggedIn }: { loggedIn: boolean }) => {
           </Dropdown.Menu>
         </Dropdown>
         <Menu.Item as={Link} to="/about" header style={{ flexGrow: 1 }}>
-          <Image avatar src="/logo.png" style={{ marginRight: ".5em" }} />
+          <Image avatar src="./logo.png" style={{ marginRight: ".5em" }} />
           CryptoCougar
         </Menu.Item>
       </Container>
@@ -144,7 +144,7 @@ const DesktopMenu = ({ loggedIn }: { loggedIn: boolean }) => {
     <Menu>
       <Container>
         <Menu.Item as={Link} to="/about" header>
-          <Image size="mini" src="/logo.png" style={{ marginRight: ".5em" }} />
+          <Image size="mini" src="/CryptoCougar/logo.png" style={{ marginRight: ".5em" }} />
           CryptoCougar
         </Menu.Item>
         {mainLinks.map(({ title, icon, link }) => (

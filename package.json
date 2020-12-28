@@ -4,8 +4,8 @@
   "homepage": "https://DKambich.github.com/CryptoCougar",
   "private": true,
   "dependencies": {
-    "@nivo/core": "^0.67.0",
-    "@nivo/line": "^0.67.0",
+    "@nivo/core": "<=0.64.0",
+    "@nivo/line": "<=0.64.0",
     "@testing-library/jest-dom": "^5.11.6",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",

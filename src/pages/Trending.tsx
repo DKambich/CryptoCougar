@@ -47,10 +47,10 @@ const connector = connect(mapStateToProps, mapDispatchToProps);
 const convertToDateDatum = (data: number[][]): Datum[] => {
   // Map each element to a Datum date point
   return data.map((item) => {
-    return { x: moment(item[0]).format("h:mm A MM/DD/YYYY"), y: item[1] };
+    return { x: item[0], y: item[1] };
   });
 };
-
+// moment(item[0]).format("h:mm A MM/DD/YYYY")
 // Define subcomponents
 
 interface TrendingGraphProps {
@@ -73,7 +73,9 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
         useMesh
         tooltip={({ point }) => (
           <Message>
-            {point.data.yFormatted} on {point.data.xFormatted}
+            {`${point.data.yFormatted} at ${moment(point.data.x).format(
+              "h:mm A [on] MM/DD/YYYY"
+            )}`}
           </Message>
         )}
         pointSize={8}
