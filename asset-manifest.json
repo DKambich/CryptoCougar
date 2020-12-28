@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/CryptoCougar/static/js/main.44053b42.chunk.js",
-    "main.js.map": "/CryptoCougar/static/js/main.44053b42.chunk.js.map",
+    "main.js": "/CryptoCougar/static/js/main.ca5211b6.chunk.js",
+    "main.js.map": "/CryptoCougar/static/js/main.ca5211b6.chunk.js.map",
     "runtime-main.js": "/CryptoCougar/static/js/runtime-main.0759b3cc.js",
     "runtime-main.js.map": "/CryptoCougar/static/js/runtime-main.0759b3cc.js.map",
     "static/css/2.9322294e.chunk.css": "/CryptoCougar/static/css/2.9322294e.chunk.css",
@@ -16,6 +16,6 @@
     "static/js/runtime-main.0759b3cc.js",
     "static/css/2.9322294e.chunk.css",
     "static/js/2.c7acf437.chunk.js",
-    "static/js/main.44053b42.chunk.js"
+    "static/js/main.ca5211b6.chunk.js"
   ]
 }
