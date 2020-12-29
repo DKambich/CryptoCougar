@@ -12,12 +12,14 @@ import {
 import { Datum, ResponsiveLine, Serie } from "@nivo/line";
 import moment from "moment";
 import { connect, ConnectedProps } from "react-redux";
+import { useResponsive } from "react-hooks-responsive";
 
 import Navbar from "../navigation/Navbar";
 
 import { RootState } from "../state/store";
 import { fetchTrendingCoins } from "../state/trending/actions";
 import { StyleSheet, TrendingData } from "../state/types";
+import { semanticBreakpoints } from "../constants";
 
 // Define page styles
 const styles: StyleSheet = {
@@ -64,7 +66,8 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
     data,
   };
 
-  const isMobile = true;
+  const { screenIsAtMost } = useResponsive(semanticBreakpoints);
+  const isMobile = screenIsAtMost("laptop");
 
   return (
     <div style={styles.graph}>
