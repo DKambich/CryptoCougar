@@ -1,6 +1,7 @@
 import React from "react";
 import * as ReactRouter from "react-router-dom";
 import { Container } from "semantic-ui-react";
+import Browse from "../pages/Browse";
 import Trending from "../pages/Trending";
 import Navbar from "./Navbar";
 
@@ -84,7 +85,7 @@ function Navigation() {
       <ReactRouter.Switch>
         <Route path="/about" component={DummyPage} />
         <Route path="/home" component={DummyPage} />
-        <Route path="/browse" component={DummyPage} />
+        <Route path="/browse" component={Browse} />
         <Route path="/trending" component={Trending} />
         <Route
           path="/favorites"
