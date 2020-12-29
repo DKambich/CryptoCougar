@@ -64,6 +64,8 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
     data,
   };
 
+  const isMobile = true;
+
   return (
     <div style={styles.graph}>
       <ResponsiveLine
@@ -79,7 +81,7 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
           </Message>
         )}
         pointSize={8}
-        margin={{ top: 50, right: 80, bottom: 50, left: 80 }}
+        margin={{ top: 50, right: 40, bottom: isMobile ? 80 : 50, left: 70 }}
         axisLeft={{
           tickSize: 10,
           tickPadding: 5,
@@ -91,8 +93,9 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
         axisBottom={{
           tickSize: 10,
           tickPadding: 5,
+          tickRotation: isMobile ? 45 : 0,
           legend: "Date",
-          legendOffset: 40,
+          legendOffset: isMobile ? 60 : 40,
           legendPosition: "middle",
           format: (value) => moment(value).format("MM/DD/YY"),
         }}
