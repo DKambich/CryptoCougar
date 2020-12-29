@@ -92,6 +92,8 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
           legendOffset: -55,
           legendPosition: "middle",
         }}
+        pointBorderColor="#0007"
+        pointBorderWidth={1}
         yFormat=" >-$.3r"
         axisBottom={{
           tickSize: 10,
