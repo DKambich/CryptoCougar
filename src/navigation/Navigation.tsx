@@ -1,7 +1,7 @@
 import React from "react";
 import * as ReactRouter from "react-router-dom";
 import { Container } from "semantic-ui-react";
-import Browse from "../pages/Browse";
+import Browse from "../pages/Browse/Browse";
 import Trending from "../pages/Trending";
 import Navbar from "./Navbar";
 

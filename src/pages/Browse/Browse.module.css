@@ -1,0 +1,14 @@
+/* Must globally modify the .results class to make is scrollable */
+:global .ui.search > .results {
+  overflow-y: auto;
+  max-height: 30vh;
+}
+
+.root {
+  padding: 2.5em;
+}
+
+.search {
+  width: 100%;
+  margin-top: 3em;
+}

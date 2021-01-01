@@ -4,10 +4,13 @@ export interface HistoricData {
   total_volumes: number[][];
 }
 
-export interface TrendingCoin {
+export interface Coin {
   id: string;
-  name: string;
   symbol: string;
+  name: string;
+}
+
+export interface TrendingCoin extends Coin {
   market_cap_rank: number;
   thumb: string;
   large: string;
