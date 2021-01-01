@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Container,
   Header,
   Icon,
+  Message,
   Search,
   SearchProps,
   SearchResultData,
@@ -15,7 +17,6 @@ import styles from "./Browse.module.css";
 import Navbar from "../../navigation/Navbar";
 
 import { RootState } from "../../state/store";
-import { StyleSheet } from "../../state/types";
 import { fetchCoins } from "../../state/browse/actions";
 
 // Define Redux state mappings
@@ -109,6 +110,18 @@ function Browse(props: BrowseProps) {
           resultRenderer={renderResult}
           value={value}
         />
+        {error && (
+          <Message negative>
+            <Message.Header>Error loading coin data</Message.Header>
+            <p>
+              The following error occured when trying to load the coin data: '
+              {error}'
+            </p>
+            <Button negative onClick={getCoins}>
+              Retry
+            </Button>
+          </Message>
+        )}
       </Container>
     </>
   );
