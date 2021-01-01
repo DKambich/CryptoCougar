@@ -13,24 +13,19 @@ import moment from "moment";
 import { connect, ConnectedProps } from "react-redux";
 
 import { useResponsive } from "react-hooks-responsive";
-import { semanticBreakpoints } from "../constants";
+import { semanticBreakpoints } from "../../constants";
 
-import Navbar from "../navigation/Navbar";
-import ErrorMessage from "../components/ErrorMessage";
+import Navbar from "../../navigation/Navbar";
+import ErrorMessage from "../../components/ErrorMessage";
 
-import { RootState } from "../state/store";
-import { fetchTrendingCoins } from "../state/trending/actions";
+import { RootState } from "../../state/store";
+import { fetchTrendingCoins } from "../../state/trending/actions";
 
-import { StyleSheet, TrendingData } from "../state/types";
+import { TrendingData } from "../../state/types";
 
-// Define page styles
-const styles: StyleSheet = {
-  root: { padding: "1.5em" },
-  graph: { height: 300, width: "auto" },
-  card: { width: "100%" },
-  cardHeader: { margin: 0, marginLeft: "1em" },
-  cardContainer: { display: "flex", alignItems: "center" },
-};
+import styles from "./Trending.module.css";
+
+console.log(styles);
 
 // Define Redux state mappings
 
@@ -72,7 +67,7 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
   const isMobile = screenIsAtMost("laptop");
 
   return (
-    <div style={styles.graph}>
+    <div className={styles.graph}>
       <ResponsiveLine
         data={[series]}
         colors={lineColor}
@@ -127,7 +122,7 @@ const TrendingCard = ({ coin }: TrendingCardProps) => {
 
   return (
     <Grid.Column key={id} mobile={16} tablet={16} computer={8}>
-      <Card style={styles.card}>
+      <Card style={{ width: "100%" }}>
         <TrendingGraph
           id={name}
           data={convertToDateDatum(prices)}
@@ -135,9 +130,9 @@ const TrendingCard = ({ coin }: TrendingCardProps) => {
         />
         <Card.Content>
           <Card.Header>
-            <div style={styles.cardContainer}>
+            <div className={styles.cardContainer}>
               <SemanticImage src={large} size="mini" />
-              <Header as="h5" style={styles.cardHeader}>
+              <Header as="h5" style={{ margin: 0, marginLeft: "1em" }}>
                 {name} ({symbol})
                 <Header.Subheader>
                   Current market cap rank {market_cap_rank}
@@ -166,7 +161,7 @@ function Trending(props: TrendingProps) {
   return (
     <>
       <Navbar />
-      <Container style={styles.root}>
+      <Container className={styles.root}>
         {loading && <Loader active={loading} inline="centered" />}
         {error && (
           <ErrorMessage

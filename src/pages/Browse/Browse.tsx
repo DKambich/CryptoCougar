@@ -17,6 +17,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 
 import { RootState } from "../../state/store";
 import { fetchCoins } from "../../state/browse/actions";
+console.log(styles);
 
 // Define Redux state mappings
 

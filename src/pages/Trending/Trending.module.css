@@ -1,0 +1,13 @@
+.root {
+  padding: 1.5em;
+}
+
+.graph {
+  height: 300px;
+  width: auto;
+}
+
+.cardContainer {
+  display: flex;
+  align-items: center;
+}
