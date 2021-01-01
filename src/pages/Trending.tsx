@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {
-  Button,
   Card,
   Container,
   Grid,
@@ -12,14 +11,17 @@ import {
 import { Datum, ResponsiveLine, Serie } from "@nivo/line";
 import moment from "moment";
 import { connect, ConnectedProps } from "react-redux";
+
 import { useResponsive } from "react-hooks-responsive";
+import { semanticBreakpoints } from "../constants";
 
 import Navbar from "../navigation/Navbar";
+import ErrorMessage from "../components/ErrorMessage";
 
 import { RootState } from "../state/store";
 import { fetchTrendingCoins } from "../state/trending/actions";
+
 import { StyleSheet, TrendingData } from "../state/types";
-import { semanticBreakpoints } from "../constants";
 
 // Define page styles
 const styles: StyleSheet = {
@@ -167,16 +169,11 @@ function Trending(props: TrendingProps) {
       <Container style={styles.root}>
         {loading && <Loader active={loading} inline="centered" />}
         {error && (
-          <Message negative>
-            <Message.Header>Error loading trending coin data</Message.Header>
-            <p>
-              The following error occured when trying to load the trending coin
-              data: '{error}'
-            </p>
-            <Button negative onClick={getTrending}>
-              Retry
-            </Button>
-          </Message>
+          <ErrorMessage
+            title="Error loading trending coin data"
+            message={`The following error occured when trying to load the trending coin data: '${error}'`}
+            onRetry={getTrending}
+          />
         )}
         <Grid container centered columns={2}>
           {trending.map((coin) => (
