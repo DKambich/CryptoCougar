@@ -25,8 +25,6 @@ import { TrendingData } from "../../state/types";
 
 import styles from "./Trending.module.css";
 
-console.log(styles);
-
 // Define Redux state mappings
 
 const mapStateToProps = ({ trending }: RootState) => ({

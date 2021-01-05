@@ -33,6 +33,17 @@ export function finishFetch(data: TrendingData[]): TrendingActionTypes {
   };
 }
 
+function loadImage(url: string): Promise<HTMLImageElement> {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+    image.addEventListener("load", () => {
+      resolve(image);
+    });
+    image.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+  });
+}
+
 async function getHistoricalData(id: string): Promise<HistoricData> {
   // Request the historical coin data for the past 7 days
   let resp = await fetch(
@@ -63,9 +74,8 @@ async function getTrendingData(): Promise<TrendingData[]> {
     const result = results[i];
     if (result.status === "fulfilled") {
       // Fetch the average color of the coins icon
-      const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(coins[i].thumb)}`;
-      const color = (await fac.getColorAsync(url)).rgb;
-
+      const image = await loadImage(coins[i].thumb);
+      const color = fac.getColor(image).rgb;
       // Create TrendingData from each coin, historic data, and color
       trendingData.push({
         ...coins[i],
@@ -74,6 +84,7 @@ async function getTrendingData(): Promise<TrendingData[]> {
       });
     }
   }
+  fac.destroy();
   return trendingData;
 }
 
