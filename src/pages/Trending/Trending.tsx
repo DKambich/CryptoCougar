@@ -24,6 +24,7 @@ import { fetchTrendingCoins } from "../../state/trending/actions";
 import { TrendingData } from "../../state/types";
 
 import styles from "./Trending.module.css";
+import { DatumValue } from "@nivo/core";
 
 // Define Redux state mappings
 
@@ -73,9 +74,9 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
         useMesh
         tooltip={({ point }) => (
           <Message>
-            {`${point.data.yFormatted} at ${moment(point.data.x).format(
-              "h:mm A [on] MM/DD/YYYY"
-            )}`}
+            {`$${(point.data.y as number).toFixed(2)} at ${moment(
+              point.data.x
+            ).format("h:mm A [on] MM/DD/YYYY")}`}
           </Message>
         )}
         pointSize={8}
@@ -86,6 +87,8 @@ const TrendingGraph = ({ id, data, lineColor }: TrendingGraphProps) => {
           legend: "Price",
           legendOffset: -55,
           legendPosition: "middle",
+          format: (value) => (value as number).toFixed(2),
+
         }}
         pointBorderColor="#0007"
         pointBorderWidth={1}
