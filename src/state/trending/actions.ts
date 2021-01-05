@@ -63,7 +63,7 @@ async function getTrendingData(): Promise<TrendingData[]> {
     const result = results[i];
     if (result.status === "fulfilled") {
       // Fetch the average color of the coins icon
-      const url = `https://cors-anywhere.herokuapp.com/${coins[i].thumb}`;
+      const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(coins[i].thumb)}`;
       const color = (await fac.getColorAsync(url)).rgb;
 
       // Create TrendingData from each coin, historic data, and color

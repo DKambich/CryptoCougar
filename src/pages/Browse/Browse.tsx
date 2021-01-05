@@ -17,7 +17,7 @@ import ErrorMessage from "../../components/ErrorMessage";
 
 import { RootState } from "../../state/store";
 import { fetchCoins } from "../../state/browse/actions";
-console.log(styles);
+import { Link, Redirect } from "react-router-dom";
 
 // Define Redux state mappings
 
@@ -79,11 +79,14 @@ function Browse(props: BrowseProps) {
   };
 
   const renderResult = (props: SearchResultProps) => {
+    const { title, description = "" } = props;
     return (
-      <Header as="h5">
-        {props.title}
-        <Header.Subheader>{props.description}</Header.Subheader>
-      </Header>
+      <Link to={`/browse/${encodeURIComponent(description)}`}>
+        <Header as="h5">
+          {title}
+          <Header.Subheader>{description}</Header.Subheader>
+        </Header>
+      </Link>
     );
   };
 

@@ -2,6 +2,7 @@ import React from "react";
 import * as ReactRouter from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import Browse from "../pages/Browse/Browse";
+import BrowseDetails from "../pages/Browse/BrowseDetails";
 import Trending from "../pages/Trending/Trending";
 import Navbar from "./Navbar";
 
@@ -13,6 +14,7 @@ export interface Routes {
   "/": {};
   "/about": {};
   "/home": {};
+  "/browse/:id": { id: string };
   "/browse": {};
   "/trending": {};
   "/favorites": {};
@@ -20,7 +22,6 @@ export interface Routes {
   "/login": {};
   "/signup": {};
   "/logout": {};
-  "/schedule/:id": { id: string };
 }
 
 /** This is just a union type of my route matching strings */
@@ -85,6 +86,7 @@ function Navigation() {
       <ReactRouter.Switch>
         <Route path="/about" component={DummyPage} />
         <Route path="/home" component={DummyPage} />
+        <Route path="/browse/:id" component={BrowseDetails} />
         <Route path="/browse" component={Browse} />
         <Route path="/trending" component={Trending} />
         <Route
